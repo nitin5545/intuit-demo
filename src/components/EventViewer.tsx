@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { EventData, EventViewerProps } from "../interface/types";
 import { fetchEvents } from "../api/events";
-import { IonCol, IonGrid, IonRow } from "@ionic/react";
 import DisplayEvents from "./DisplayEvents";
 import EventHeader from "./EventHeader";
+import { Container, Row, Col } from "react-bootstrap";
 
 const EventViewer = (props: EventViewerProps) => {
     const [events, setEvents] = useState<EventData[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const [selectedEvents, setSelectedEvents] = useState<EventData[]>([]);
     useEffect(() => {
-        setEvents(fetchEvents())
+        fetchEvents()
+        .then(data => {
+            setEvents(data)
+            setLoading(false)
+        })
+        .catch(err => console.log(err))
     }, [])
 
     const onSelect = (id : number) => {
@@ -26,7 +32,7 @@ const EventViewer = (props: EventViewerProps) => {
         return events.map((event) => {
             let current_start_time = new Date(event.start_time).getTime();
             let current_end_time = new Date(event.end_time).getTime();
-            if(!event.isSelected && ((current_end_time >= start_time && current_end_time <= end_time) || (current_start_time >= start_time && current_end_time <= start_time))){
+            if(!event.isSelected && ((current_end_time > start_time && current_end_time <= end_time) || (current_start_time >= start_time && current_end_time <= start_time))){
                 event.isSelectable = isSelectable
             }
             return event
@@ -41,20 +47,21 @@ const EventViewer = (props: EventViewerProps) => {
         setEvents(updatedEvents)
     }
     return (
-        <IonGrid>
-            <IonRow>
-                <IonCol className="event-containers">
-                    <EventHeader title="All Events" />
-                    {events.length > 0 ? <DisplayEvents events={events} onClick={onSelect} onFilter={(event) => !event.isSelected}/> : 
-                    <IonRow className="no-events">No events to display</IonRow>}
-                </IonCol>
-                <IonCol className="event-containers">
-                    <EventHeader title="Selected Events" />
-                    {selectedEvents.length > 0 ? <DisplayEvents events={selectedEvents} onClick={onDeselect} onFilter={() => true}/> : 
-                    <IonRow className="no-events">No selected events</IonRow>}
-                </IonCol>
-            </IonRow>
-        </IonGrid>
+        <Container className="mt-10">
+            {loading ? "Loading....." :
+                <Row>
+                    <Col className="event-containers">
+                        <EventHeader title="All Events" />
+                        {events.length > 0 ? <DisplayEvents events={events} onClick={onSelect} onFilter={(event) => !event.isSelected} /> :
+                            <Row className="no-events">No events to display</Row>}
+                    </Col>
+                    <Col className="event-containers">
+                        <EventHeader title="Selected Events" />
+                        {selectedEvents.length > 0 ? <DisplayEvents events={selectedEvents} onClick={onDeselect} onFilter={() => true} /> :
+                            <Row className="no-events">No selected events</Row>}
+                    </Col>
+                </Row>}
+        </Container>
     )
 }
 

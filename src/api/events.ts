@@ -72,5 +72,5 @@ const data: EventData[] = [
     }
 ]
 export const fetchEvents = () => {
-    return data;
+    return new Promise<EventData[]>(resolve => setTimeout(() => resolve(data), 1000));
 }

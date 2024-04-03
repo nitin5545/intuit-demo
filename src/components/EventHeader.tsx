@@ -1,11 +1,11 @@
-import { IonRow } from "@ionic/react"
+import { Row } from "react-bootstrap";
 import { EventHeaderProps } from "../interface/types"
 
 const EventHeader = ({title} : EventHeaderProps) => {
     return (
-        <IonRow className="container-header">
+        <Row className="container-header mb-10">
             {title}
-        </IonRow>
+        </Row>
     )
 }
 

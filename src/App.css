@@ -41,6 +41,7 @@
   border: 1px solid black;
   border-radius: 5px;
   margin: 5px;
+  padding: 10px;
 }
 
 .container-header {
@@ -56,10 +57,11 @@
   align-items: center
 }
 
-.event-grid {
+.event-Container {
   border: 1px solid black;
   border-radius: 20px;
   padding: 10px;
+
 }
 
 .enabled-event {
@@ -110,4 +112,20 @@
 .button-container{
   justify-content: end;
   margin-top: 15px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mb-10{
+  margin-bottom: 10px;
+}
+
+.events-row{
+  justify-content: center;
+}
+
+.button-col {
+  display: inline-flex;
+  justify-content: end;
 }

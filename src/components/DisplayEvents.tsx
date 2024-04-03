@@ -1,4 +1,4 @@
-import { IonCol, IonRow } from "@ionic/react";
+import { Row, Col } from "react-bootstrap";
 import { EventData } from "../interface/types";
 import Event from "./Event";
 
@@ -8,15 +8,15 @@ interface DisplayEventsProps{
     onFilter : (event : EventData) => boolean}
 const DisplayEvents = ({ events, onClick, onFilter }: DisplayEventsProps) => {
     return (
-        <IonRow>
+        <Row className="events-row">
             {events.filter((event) => onFilter(event)).map((event: EventData) => {
                 return (
-                    <IonCol key={event.id} sizeMd="6" sizeXs="12">
+                    <Col key={event.id} md={5} xs={12} className="mb-10">
                         <Event eventData={event} onClick={onClick}/>
-                    </IonCol>
+                    </Col>
                 )
             })}
-        </IonRow>
+        </Row>
     )
 }
 
