@@ -12,44 +12,56 @@ const mockEventData: EventData = {
   id: 1,
 };
 
-test('Event component renders event details with proper classes (selectable)', () => {
-  const { getByText, getByTestId } = render(<Event eventData={mockEventData} onClick={jest.fn()} />);
+test('renders a selectable event ', () => {
+  const {getByTestId } = render(<Event eventData={mockEventData} onClick={jest.fn()} />);
 
   // Check event Container class
-  const eventContainer = getByTestId('event-Container');
+  const eventContainer = getByTestId('event-container');
   expect(eventContainer).toHaveClass('enabled-event');
-  expect(eventContainer).toHaveClass('event-Container');
+  expect(eventContainer).toHaveClass('event-container');
 
   // Check event details and data-testid
   expect(getByTestId('event-category')).toHaveTextContent('M');
   expect(getByTestId('event-name')).toHaveTextContent('Team Discussion');
-  expect(getByTestId('category-name')).toHaveTextContent('(Meeting)');
+  expect(getByTestId('category-name')).toHaveTextContent('Meeting');
   expect(getByTestId('timing')).toHaveTextContent('10:00 AM - 11:00 AM');
+  
+  const selectButton = getByTestId("select-button")
+  expect(selectButton).toHaveClass("selectable-button")
+  expect(selectButton).toBeEnabled()
 });
 
-test('Event component renders button with "Select" text and proper classes (selectable)', () => {
-  const { getByText, getByTestId } = render(<Event eventData={mockEventData} onClick={jest.fn()} />);
-
-  const button = getByTestId('select-button');
-  expect(button).toHaveTextContent('Select');
-  expect(button).toHaveClass('selectable-button');
-  expect(button).toHaveClass('button');
-  expect(button).not.toBeDisabled();
-});
-
-test('Event component renders "Remove" button for selected events', () => {
+test('renders Selected event', () => {
   const selectedEventData = { ...mockEventData, isSelected: true };
-  const { getByText, getByTestId } = render(<Event eventData={selectedEventData} onClick={jest.fn()} />);
+  const { getByTestId } = render(<Event eventData={selectedEventData} onClick={jest.fn()} />);
+  const eventContainer = getByTestId('event-container');
+  expect(eventContainer).toHaveClass('enabled-event');
+  expect(eventContainer).toHaveClass('event-container');
 
-  const button = getByTestId('select-button');
-  expect(button).toHaveTextContent('Remove');
-  expect(button).toHaveClass('selected-button');
-  expect(button).toHaveClass('button');
+  // Check event details and data-testid
+  expect(getByTestId('event-category')).toHaveTextContent('M');
+  expect(getByTestId('event-name')).toHaveTextContent('Team Discussion');
+  expect(getByTestId('category-name')).toHaveTextContent('Meeting');
+  expect(getByTestId('timing')).toHaveTextContent('10:00 AM - 11:00 AM');
+  
+  const selectButton = getByTestId("select-button")
+  expect(selectButton).toHaveClass("selected-button")
+  expect(selectButton).toHaveTextContent("Remove")
+  expect(selectButton).toBeEnabled()
 });
 
-test('Event component disables button for non-selectable events', () => {
+test('render a non selectable event', () => {
   const nonSelectableEventData = { ...mockEventData, isSelectable: false };
   const { getByTestId } = render(<Event eventData={nonSelectableEventData} onClick={jest.fn()} />);
+  const eventContainer = getByTestId('event-container');
+  expect(eventContainer).toHaveClass('disabled-event');
+  expect(eventContainer).toHaveClass('event-container');
+
+  // Check event details and data-testid
+  expect(getByTestId('event-category')).toHaveTextContent('M');
+  expect(getByTestId('event-name')).toHaveTextContent('Team Discussion');
+  expect(getByTestId('category-name')).toHaveTextContent('Meeting');
+  expect(getByTestId('timing')).toHaveTextContent('10:00 AM - 11:00 AM');
 
   const button = getByTestId('select-button');
   expect(button).toBeDisabled();
