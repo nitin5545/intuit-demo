@@ -6,6 +6,7 @@ export interface EventData {
     end_time : string
     isSelected? : boolean
     isSelectable? : boolean
+    disabled? : boolean
 }
 
 export interface EventViewerProps {

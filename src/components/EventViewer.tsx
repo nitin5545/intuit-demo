@@ -21,8 +21,19 @@ const EventViewer = (props: EventViewerProps) => {
     const onSelect = (id : number) => {
         const sEvents = events.filter(event => event.id === id)
         sEvents.forEach(sEvent => sEvent.isSelected = true)
-        setSelectedEvents([...selectedEvents, ...sEvents])
-        const updatedEvents = updateConflictingEvents(sEvents[0], false)
+        const currentSelectedEvents = [...selectedEvents, ...sEvents]
+        setSelectedEvents(currentSelectedEvents)
+        let updatedEvents: EventData[] = []
+        if(currentSelectedEvents.length < props.selectableEventCount){
+            updatedEvents = updateConflictingEvents(sEvents[0], false)
+        } else {
+            updatedEvents = events.map(event => {
+                if(!event.isSelected && event.isSelectable !== false) {
+                    event.disabled = true
+                }
+                return event;
+            })
+        }
         setEvents(updatedEvents)
     }
 
@@ -32,11 +43,17 @@ const EventViewer = (props: EventViewerProps) => {
         return events.map((event) => {
             let current_start_time = new Date(event.start_time).getTime();
             let current_end_time = new Date(event.end_time).getTime();
-            if(!event.isSelected && ((current_end_time > start_time && current_end_time <= end_time) || (current_start_time >= start_time && current_end_time <= start_time))){
+            if(!event.isSelected && isOverlappingIntervals(current_start_time, current_end_time, start_time, end_time)){
                 event.isSelectable = isSelectable
             }
             return event
         })
+    }
+
+    const isOverlappingIntervals = (eventStart : number, eventEnd : number, startTime : number, endTime : number) => {
+        return (startTime >= eventStart && startTime < eventEnd) 
+            || (endTime > eventStart && endTime <= eventEnd) 
+            || (eventStart >= startTime && eventEnd <= endTime)
     }
 
     const onDeselect = (id : number) => {
@@ -44,6 +61,7 @@ const EventViewer = (props: EventViewerProps) => {
         unSelectedEvents.forEach(sEvent => sEvent.isSelected = false)
         setSelectedEvents(selectedEvents.filter(event => event.id !== id))
         const updatedEvents = updateConflictingEvents(unSelectedEvents[0], true)
+        updatedEvents.filter(event => event.disabled === true).forEach(event => event.disabled = false)
         setEvents(updatedEvents)
     }
     return (
