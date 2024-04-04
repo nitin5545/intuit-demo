@@ -129,3 +129,8 @@
   display: inline-flex;
   justify-content: end;
 }
+
+.banner {
+  justify-content: center;
+  color: red;
+}
