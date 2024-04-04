@@ -70,7 +70,7 @@ const EventViewer = (props: EventViewerProps) => {
                 <Row>
                     <Col className="event-containers">
                         <EventHeader title="All Events" />
-                        <Row className="mb-10 banner">You can select at most 3 events </Row>
+                        <Row className="mb-10 banner">You can select at most {props.selectableEventCount} events </Row>
                         {events.length > 0 ? <DisplayEvents events={events} onClick={onSelect} onFilter={(event) => !event.isSelected} /> :
                             <Row className="no-events">No events to display</Row>}
                     </Col>
